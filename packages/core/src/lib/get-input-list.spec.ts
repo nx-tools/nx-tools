@@ -3,10 +3,6 @@ import * as path from 'node:path';
 import { getPosixName } from './get-input';
 import { getInputList } from './get-input-list';
 
-beforeEach(() => {
-  jest.clearAllMocks();
-});
-
 describe('getInputList', () => {
   it('single line correctly', async () => {
     await setInput('foo', 'bar');

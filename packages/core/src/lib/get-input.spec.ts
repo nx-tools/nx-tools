@@ -1,35 +1,6 @@
-import mockedEnv, { RestoreFn } from 'mocked-env';
 import * as path from 'node:path';
+import { vi } from 'vitest';
 import { getBooleanInput, getInput, getMultilineInput, getPosixName } from './get-input';
-
-const testEnvVars = {
-  'my var': '',
-  'special char var \r\n];': '',
-  'my var2': '',
-  'my secret': '',
-  'special char secret \r\n];': '',
-  'my secret2': '',
-  PATH: `path1${path.delimiter}path2`,
-
-  // Set inputs
-  INPUT_PREFIXED_MY_INPUT: 'prefixed-val',
-  INPUT_MY_INPUT: 'val',
-  INPUT_MY_OTHER_INPUT: 'other-val',
-  INPUT_MISSING: '',
-  'INPUT_SPECIAL_CHARS_\'\t"\\': '\'\t"\\ response ',
-  INPUT_MULTIPLE_SPACES_VARIABLE: 'I have multiple spaces',
-  INPUT_BOOLEAN_INPUT: 'true',
-  INPUT_BOOLEAN_INPUT_TRUE1: 'true',
-  INPUT_BOOLEAN_INPUT_TRUE2: 'True',
-  INPUT_BOOLEAN_INPUT_TRUE3: 'TRUE',
-  INPUT_BOOLEAN_INPUT_FALSE1: 'false',
-  INPUT_BOOLEAN_INPUT_FALSE2: 'False',
-  INPUT_BOOLEAN_INPUT_FALSE3: 'FALSE',
-  INPUT_WRONG_BOOLEAN_INPUT: 'wrong',
-  INPUT_WITH_TRAILING_WHITESPACE: '  some val  ',
-  INPUT_MY_INPUT_LIST: 'val1\nval2\nval3',
-  INPUT_LIST_WITH_TRAILING_WHITESPACE: '  val1  \n  val2  \n  ',
-};
 
 describe('getPosixName', () => {
   test.each([
@@ -47,16 +18,34 @@ describe('getPosixName', () => {
 });
 
 describe('getInputs', () => {
-  let restore: RestoreFn;
-  beforeEach(() => {
-    restore = mockedEnv({
-      ...testEnvVars,
-    });
+  beforeAll(() => {
+    vi.stubEnv('my var', '');
+    vi.stubEnv('special char var \r\n];', '');
+    vi.stubEnv('my var2', '');
+    vi.stubEnv('my secret', '');
+    vi.stubEnv('special char secret \r\n];', '');
+    vi.stubEnv('my secret2', '');
+    vi.stubEnv('PATH', `path1${path.delimiter}path2`), vi.stubEnv('INPUT_PREFIXED_MY_INPUT', 'prefixed-val');
+    vi.stubEnv('INPUT_MY_INPUT', 'val');
+    vi.stubEnv('INPUT_MY_OTHER_INPUT', 'other-val');
+    vi.stubEnv('INPUT_MISSING', '');
+    vi.stubEnv('INPUT_SPECIAL_CHARS_\'\t"\\', '\'\t"\\ response ');
+    vi.stubEnv('INPUT_MULTIPLE_SPACES_VARIABLE', 'I have multiple spaces');
+    vi.stubEnv('INPUT_BOOLEAN_INPUT', 'true');
+    vi.stubEnv('INPUT_BOOLEAN_INPUT_TRUE1', 'true');
+    vi.stubEnv('INPUT_BOOLEAN_INPUT_TRUE2', 'True');
+    vi.stubEnv('INPUT_BOOLEAN_INPUT_TRUE3', 'TRUE');
+    vi.stubEnv('INPUT_BOOLEAN_INPUT_FALSE1', 'false');
+    vi.stubEnv('INPUT_BOOLEAN_INPUT_FALSE2', 'False');
+    vi.stubEnv('INPUT_BOOLEAN_INPUT_FALSE3', 'FALSE');
+    vi.stubEnv('INPUT_WRONG_BOOLEAN_INPUT', 'wrong');
+    vi.stubEnv('INPUT_WITH_TRAILING_WHITESPACE', '  some val  ');
+    vi.stubEnv('INPUT_MY_INPUT_LIST', 'val1\nval2\nval3');
+    vi.stubEnv('INPUT_LIST_WITH_TRAILING_WHITESPACE', '  val1  \n  val2  \n  ');
   });
 
-  afterEach(() => {
-    jest.restoreAllMocks();
-    restore();
+  afterAll(() => {
+    vi.unstubAllEnvs();
   });
 
   describe('getInput', () => {
@@ -79,10 +68,6 @@ describe('getInputs', () => {
     it('getInput is case insensitive', () => {
       expect(getInput('My InPuT')).toBe('val');
     });
-
-    // it('getInput handles special characters', () => {
-    //   expect(getInput('special chars_\'\t"\\')).toBe('\'\t"\\ response');
-    // });
 
     it('getInput handles multiple spaces', () => {
       expect(getInput('multiple spaces variable')).toBe('I have multiple spaces');

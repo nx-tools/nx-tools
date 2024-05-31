@@ -1,12 +1,13 @@
+import { vi } from 'vitest';
 import { loadPackage } from './load-package';
 
 describe('loadPackage', () => {
   beforeEach(() => {
-    jest.spyOn(console, 'error').mockImplementation(() => true);
+    vi.spyOn(console, 'error').mockImplementation(() => true);
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe('when package is available', () => {
@@ -24,7 +25,7 @@ describe('loadPackage', () => {
     });
 
     it('should call process.exit if package not exists', async () => {
-      const mockExit = jest.spyOn(process, 'exit').mockImplementation(jest.fn() as never);
+      const mockExit = vi.spyOn(process, 'exit').mockImplementation(vi.fn() as never);
       await loadPackage('not-existent-package', 'ctx');
       expect(mockExit).toHaveBeenCalledWith(1);
     });

@@ -1,21 +1,23 @@
 import * as chalk from 'chalk';
 import * as os from 'node:os';
-import { logger } from './logging';
+import { vi } from 'vitest';
+import { isDebug, logger } from './logging';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ci = require('ci-info');
 
 describe('Logging', () => {
   beforeEach(() => {
-    jest.spyOn(console, 'debug').mockImplementation(() => true);
-    jest.spyOn(console, 'error').mockImplementation(() => true);
-    jest.spyOn(console, 'info').mockImplementation(() => true);
-    jest.spyOn(console, 'log').mockImplementation(() => true);
-    jest.spyOn(console, 'warn').mockImplementation(() => true);
+    vi.spyOn(console, 'debug').mockImplementation(() => true);
+    vi.spyOn(console, 'error').mockImplementation(() => true);
+    vi.spyOn(console, 'info').mockImplementation(() => true);
+    vi.spyOn(console, 'log').mockImplementation(() => true);
+    vi.spyOn(console, 'warn').mockImplementation(() => true);
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
+    vi.unstubAllEnvs();
   });
 
   it('debug should call console debug method', () => {
@@ -54,13 +56,14 @@ describe('Logging', () => {
 
   describe('startGroup', () => {
     it('should use github action syntaxt in Github Actions', () => {
-      jest.replaceProperty(ci, 'GITHUB_ACTIONS', true);
+      vi.spyOn(ci, 'GITHUB_ACTIONS', 'get').mockReturnValue(true);
+
       logger.startGroup('this is a group message');
       expect(console.info).toHaveBeenCalledWith(`::group::this is a group message${os.EOL}`);
     });
 
     it('should use fallback systaxt', () => {
-      jest.replaceProperty(ci, 'GITHUB_ACTIONS', false);
+      vi.spyOn(ci, 'GITHUB_ACTIONS', 'get').mockReturnValue(false);
 
       logger.startGroup('this is a group message');
       expect(console.info).toHaveBeenCalledWith(
@@ -71,13 +74,14 @@ describe('Logging', () => {
 
   describe('endGroup', () => {
     it('should use github action syntaxt in Github Actions', () => {
-      jest.replaceProperty(ci, 'GITHUB_ACTIONS', true);
+      vi.spyOn(ci, 'GITHUB_ACTIONS', 'get').mockReturnValue(true);
+
       logger.endGroup('this is a group message');
       expect(console.info).toHaveBeenCalledWith(`::endgroup::${os.EOL}`);
     });
 
     it('should use fallback systaxt', () => {
-      jest.replaceProperty(ci, 'GITHUB_ACTIONS', false);
+      vi.spyOn(ci, 'GITHUB_ACTIONS', 'get').mockReturnValue(false);
 
       logger.endGroup('this is a group message');
       expect(console.info).not.toHaveBeenCalled();
@@ -86,7 +90,7 @@ describe('Logging', () => {
 
   describe('group wraps an async call in a group', () => {
     it('Github Actions', async () => {
-      jest.replaceProperty(ci, 'GITHUB_ACTIONS', true);
+      vi.spyOn(ci, 'GITHUB_ACTIONS', 'get').mockReturnValue(true);
 
       const result = await logger.group('mygroup', async () => {
         console.info('in my group\n');
@@ -95,6 +99,41 @@ describe('Logging', () => {
 
       expect(result).toBe(true);
       assertWriteCalls([`::group::mygroup${os.EOL}`, 'in my group\n', `::endgroup::${os.EOL}`]);
+    });
+  });
+
+  describe('isDebug', () => {
+    it('shoudl return true if RUNNER_DEBUG=1', async () => {
+      vi.stubEnv('RUNNER_DEBUG', '1');
+
+      expect(process.env['RUNNER_DEBUG']).toBe('1');
+      expect(isDebug()).toBeTruthy();
+    });
+
+    it('shoudl return true if RUNNER_DEBUG=true', async () => {
+      vi.stubEnv('RUNNER_DEBUG', 'true');
+
+      expect(process.env['RUNNER_DEBUG']).toBe('true');
+      expect(isDebug()).toBeTruthy();
+    });
+
+    it('shoudl return true if RUNNER_DEBUG=0', async () => {
+      vi.stubEnv('RUNNER_DEBUG', '0');
+
+      expect(process.env['RUNNER_DEBUG']).toBe('0');
+      expect(isDebug()).toBeFalsy();
+    });
+
+    it('shoudl return true if RUNNER_DEBUG=false', async () => {
+      vi.stubEnv('RUNNER_DEBUG', 'false');
+
+      expect(process.env['RUNNER_DEBUG']).toBe('false');
+      expect(isDebug()).toBeFalsy();
+    });
+
+    it('shoudl return true if RUNNER_DEBUG is not defined', async () => {
+      expect(process.env['RUNNER_DEBUG']).toBeUndefined();
+      expect(isDebug()).toBeFalsy();
     });
   });
 });

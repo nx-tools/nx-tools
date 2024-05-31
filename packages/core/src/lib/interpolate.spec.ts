@@ -1,19 +1,15 @@
-import mockedEnv, { RestoreFn } from 'mocked-env';
+import { vi } from 'vitest';
 import { interpolate } from './interpolate';
 
 describe('String interpolation', () => {
-  let restore: RestoreFn;
-
   beforeAll(() => {
-    restore = mockedEnv({
-      TAG1: 'main',
-      TAG2: '1.0.0',
-      SUFFIX: '-beta.1',
-    });
+    vi.stubEnv('TAG1', 'main');
+    vi.stubEnv('TAG2', '1.0.0');
+    vi.stubEnv('SUFFIX', '-beta.1');
   });
 
   afterAll(() => {
-    restore();
+    vi.unstubAllEnvs();
   });
 
   test.each([

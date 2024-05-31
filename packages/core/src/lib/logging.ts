@@ -13,7 +13,7 @@ const escapeData = (s: any): string => {
  * Gets whether Debug is on or not
  */
 export function isDebug(): boolean {
-  return process.env['RUNNER_DEBUG'] === '1';
+  return process.env['RUNNER_DEBUG'] === '1' || process.env['RUNNER_DEBUG'] === 'true';
 }
 
 /**

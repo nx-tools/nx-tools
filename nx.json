@@ -4,10 +4,10 @@
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": [
       "default",
-      "!{projectRoot}/.eslintrc.json",
-      "!{projectRoot}/eslint.config.js",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
       "!{projectRoot}/tsconfig.spec.json",
+      "!{projectRoot}/.eslintrc.json",
+      "!{projectRoot}/eslint.config.js",
       "!{projectRoot}/jest.config.[jt]s",
       "!{projectRoot}/src/test-setup.[jt]s",
       "!{projectRoot}/test-setup.[jt]s"
@@ -16,10 +16,28 @@
   },
   "nxCloudAccessToken": "NWQ5YjFmMDAtZGE0Yi00N2FjLWJhODktZTYzMDI2ZGIyNzEzfHJlYWQ=",
   "targetDefaults": {
+    "@nx/vite:build": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
+    },
     "@nx/js:tsc": {
       "cache": true,
       "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
+    },
+    "@nx/jest:jest": {
+      "cache": true,
+      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
+      "options": {
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
     }
   },
   "release": {
@@ -35,15 +53,19 @@
   },
   "plugins": [
     {
-      "plugin": "@nx/eslint/plugin",
+      "plugin": "@nx/vite/plugin",
       "options": {
-        "targetName": "lint"
+        "buildTargetName": "build",
+        "testTargetName": "test",
+        "serveTargetName": "serve",
+        "previewTargetName": "preview",
+        "serveStaticTargetName": "serve-static"
       }
     },
     {
-      "plugin": "@nx/jest/plugin",
+      "plugin": "@nx/eslint/plugin",
       "options": {
-        "targetName": "test"
+        "targetName": "lint"
       }
     }
   ]
