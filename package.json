@@ -54,7 +54,7 @@
     "@types/semver": "7.5.8",
     "@typescript-eslint/parser": "^8.13.0",
     "commitizen": "4.3.1",
-    "dotenv": "16.4.5",
+    "dotenv": "16.4.7",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^9.0.0",
     "husky": "9.1.7",
