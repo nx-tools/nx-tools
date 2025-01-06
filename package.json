@@ -51,7 +51,7 @@
     "@swc/cli": "0.3.14",
     "@swc/core": "1.5.29",
     "@swc/helpers": "0.5.15",
-    "@types/jest": "29.5.12",
+    "@types/jest": "29.5.14",
     "@types/node": "18.19.43",
     "@types/semver": "7.5.8",
     "@vitest/coverage-v8": "^1.0.4",
