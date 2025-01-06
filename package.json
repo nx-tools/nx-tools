@@ -29,7 +29,7 @@
     "moment": "2.30.1",
     "moment-timezone": "0.5.45",
     "prisma": "6.1.0",
-    "properties-file": "3.5.5",
+    "properties-file": "3.5.11",
     "semver": "7.6.3",
     "tmp": "0.2.3"
   },
