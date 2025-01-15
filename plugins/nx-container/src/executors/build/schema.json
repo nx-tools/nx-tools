@@ -137,6 +137,13 @@
       "description": "Push is a shorthand for --output=type=registry (default false)",
       "default": false
     },
+    "registries": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Container registries to deploy built images to"
+    },
     "secrets": {
       "type": "array",
       "items": {

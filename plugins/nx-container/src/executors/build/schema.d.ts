@@ -89,6 +89,10 @@ export interface BuildExecutorSchema {
    */
   push?: boolean;
   /**
+   * Container registries to deploy built images to
+   */
+  registries?: string[];
+  /**
    * List of secrets to expose to the build (eg. key=string, GIT_AUTH_TOKEN=mytoken)
    */
   secrets?: string[];

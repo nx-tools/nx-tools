@@ -32,6 +32,7 @@ export interface Inputs {
   provenance: string;
   pull: boolean;
   push: boolean;
+  registries: string[];
   secretFiles: string[];
   secrets: string[];
   shmSize: string;
@@ -89,6 +90,7 @@ export async function getInputs(
     provenance: core.getInput('provenance'),
     pull: core.getBooleanInput('pull', { fallback: `${options.pull || false}` }),
     push: core.getBooleanInput('push', { fallback: `${options.push || false}` }),
+    registries: await getInputList('registries', prefix, options.registries, true),
     secretFiles: await getInputList('secret-files', prefix, options['secret-files'], true),
     secrets: await getInputList('secrets', prefix, options.secrets, true),
     shmSize: core.getInput('shm-size', { prefix, fallback: options['shm-size'] }),

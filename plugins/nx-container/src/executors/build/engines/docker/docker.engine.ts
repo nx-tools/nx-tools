@@ -188,7 +188,9 @@ export class Docker extends EngineAdapter {
       args.push('--ssh', ssh);
     });
     await asyncForEach(inputs.tags, async (tag) => {
-      args.push('--tag', tag);
+      inputs.registries && inputs.registries.length > 0
+        ? inputs.registries.forEach((registry) => args.push('--tag', `${registry}/${tag}`))
+        : args.push('--tag', tag);
     });
     if (inputs.target) {
       args.push('--target', inputs.target);
