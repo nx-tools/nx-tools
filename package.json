@@ -52,7 +52,7 @@
     "@swc/core": "1.5.29",
     "@swc/helpers": "0.5.15",
     "@types/jest": "29.5.12",
-    "@types/node": "18.19.43",
+    "@types/node": "18.19.79",
     "@types/semver": "7.5.8",
     "@vitest/coverage-v8": "^1.0.4",
     "@vitest/ui": "^1.3.1",
